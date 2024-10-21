@@ -1,5 +1,7 @@
 Face Detection with OpenCV and Dlib
+
 Description
+
 This project demonstrates real-time face detection using OpenCV and Dlib libraries in Python. The application captures video from your computer's default camera, detects faces, and displays the results with bounding boxes and face numbers.
 
 Features
