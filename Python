@@ -1,96 +1,35 @@
-# Import libraries 
-import cv2 
-import numpy as np 
-import dlib 
-# (0) in VideoCapture is used to 
-# connect to your computer's default camera 
-cap = cv2.VideoCapture(0) 
-# Get the coordinates 
-detector = dlib.get_frontal_face_detector() 
-while True: 
+import cv2
 
-	# Capture frame-by-frame 
-	ret, frame = cap.read() 
-	frame = cv2.flip(frame, 1) 
+# Load the pre-trained face detector from OpenCV
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-	# Our operations on the frame come here 
-	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
-	faces = detector(gray) 
+# Open a connection to the camera
+cap = cv2.VideoCapture(0)
 
-	# Counter to count number of faces 
-	i = 0
-	for face in faces: 
-		x, y = face.left(), face.top() 
-		x1, y1 = face.right(), face.bottom() 
-		cv2.rectangle(frame, (x, y), (x1, y1), (0, 255, 0), 2) 
+while True:
+    # Read a frame from the camera
+    ret, frame = cap.read()
+    if not ret:
+        break
 
-		# Increment the iterartor each time you get the coordinates 
-		i = i+1
+    # Convert to grayscale
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-		# Adding face number to the box detecting faces 
-		cv2.putText(frame, 'face num'+str(i), (x-10, y-10), 
-					cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2) 
-		print(face, i) 
+    # Detect faces
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-	# Display the resulting frame 
-	cv2.imshow('frame', frame) 
-# Enter key 'q' to break the loop 
-if cv2.waitKey(1) & 0xFF == ord('q'): 
-	break
-# When everything done, release 
-# the capture and destroy the windows 
-cap.release() 
+    # Draw rectangles around detected faces
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+    # Display the frame
+    cv2.imshow('Face Detection', frame)
+
+    # Break the loop on 'q' key press
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Release resources
+cap.release()
 cv2.destroyAllWindows() 
-# Import required libraries 
-import cv2 
-import numpy as np 
-import dlib 
-
-
-# Connects to your computer's default camera 
-cap = cv2.VideoCapture(0) 
-
-
-# Detect the coordinates 
-detector = dlib.get_frontal_face_detector() 
-
-
-# Capture frames continuously 
-while True: 
-
-	# Capture frame-by-frame 
-	ret, frame = cap.read() 
-	frame = cv2.flip(frame, 1) 
-
-	# RGB to grayscale 
-	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
-	faces = detector(gray) 
-
-	# Iterator to count faces 
-	i = 0
-	for face in faces: 
-
-		# Get the coordinates of faces 
-		x, y = face.left(), face.top() 
-		x1, y1 = face.right(), face.bottom() 
-		cv2.rectangle(frame, (x, y), (x1, y1), (0, 255, 0), 2) 
-
-		# Increment iterator for each face in faces 
-		i = i+1
-
-		# Display the box and faces 
-		cv2.putText(frame, 'face num'+str(i), (x-10, y-10), 
-					cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2) 
-		print(face, i) 
-
-	# Display the resulting frame 
-	cv2.imshow('frame', frame) 
-
-	# This command let's us quit with the "q" button on a keyboard. 
-	if cv2.waitKey(1) & 0xFF == ord('q'): 
-		break
-
-
-# Release the capture and destroy the windows 
-cap.release() 
-cv2.destroyAllWindows()
+ 
